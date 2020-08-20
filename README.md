@@ -74,10 +74,39 @@ Write the following functions:
 
 1.  `makeCacheMatrix`: This function creates a special "matrix" object
     that can cache its inverse.
+
+makeCacheMatrix <- function(x = matrix()) {
+         i <- NULL
+         set <- function(y) {
+                  x <<- y
+                  i <<- NULL
+         }
+         get <- function() x
+         setinverse <- function(inverse) i <<- inverse
+         getinverse <- function() i
+         list(set = set,
+              get = get,
+              setinverse = setinverse,
+              getinverse = getinverse)
+}
+
 2.  `cacheSolve`: This function computes the inverse of the special
     "matrix" returned by `makeCacheMatrix` above. If the inverse has
     already been calculated (and the matrix has not changed), then
     `cacheSolve` should retrieve the inverse from the cache.
+
+
+cacheSolve <- function(x, ...) {
+         i <- x$getinverse()
+         if (!is.null(i)) {
+                  message("getting cached data")
+                  return(i)
+         }
+         data <- x$get()
+         i <- solve(data, ...)
+         x$setinverse(i)
+         i
+}
 
 Computing the inverse of a square matrix can be done with the `solve`
 function in R. For example, if `X` is a square invertible matrix, then
@@ -99,6 +128,19 @@ In order to complete this assignment, you must do the following:
     git branch to the GitHub repository under your account.
 5.  Submit to Coursera the URL to your GitHub repository that contains
     the completed R code for the assignment.
+
+B <- matrix(c(1,2,3,4),2,2)
+#solve(B)
+B1 <- makeCacheMatrix(B)
+cacheSolve(B1) #inverse returned after computation
+##      [,1] [,2]
+## [1,]   -2  1.5
+## [2,]    1 -0.5
+cacheSolve(B1) #inverse returned from cache
+## getting cached data
+##      [,1] [,2]
+## [1,]   -2  1.5
+## [2,]    1 -0.5
 
 ### Grading
 
